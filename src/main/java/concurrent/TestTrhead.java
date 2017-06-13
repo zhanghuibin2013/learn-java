@@ -1,3 +1,5 @@
+package concurrent;
+
 /**
  * Created with IntelliJ IDEA.
  * User: yuguodong
