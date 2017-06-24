@@ -1,182 +1,182 @@
-package sort;
-
-import com.sun.istack.internal.NotNull;
-
-public class QuickSort2 {
-    private static final int N = 20;
-
-    private <T extends Comparable<T>> void print(T[] arr) {
-        for (int i = 0; i < N; i++) {
-            System.out.print(String.format("%d\t", i));
-        }
-        System.out.println();
-        for (T i : arr) {
-            System.out.print(i);
-            System.out.print("\t");
-        }
-        System.out.println();
-    }
-
-    public static void main(String[] args) {
-        int arri[] = new int[]{8, 12, 10, 10, 9, 1, 8, 4, 0, 4, 6, 9, 0, 2, 9, 7, 15, 17, 10, 10};
-        Item arr[] = new Item[N];
-        for (int i = 0; i < N; i++) {
-            arr[i] = new Item(arri[i]);
-        }
-        QuickSort2 quickSort = new QuickSort2();
-
-        quickSort.print(arr);
-        quickSort.quickSort1(arr, 0, N - 1);
-        quickSort.print(arr);
-    }
-
-    private static class Item implements Comparable {
-
-        private int key;
-
-        public Item(int key) {
-            this.key = key;
-        }
-
-        public int getKey() {
-            return key;
-        }
-
-        public void setKey(int key) {
-            this.key = key;
-        }
-
-
-        public int compareTo(@NotNull Object o) {
-            if (o == null) {
-                return 1;
-            }
-            if (o instanceof Item) {
-                Item item = (Item) o;
-                return Integer.compare(key, item.key);
-            }
-            throw new IllegalArgumentException("o is not instanceof Item");
-        }
-
-        public String toString() {
-            return String.valueOf(key);
-        }
-    }
-
-    private <T extends Comparable<T>> void quickSort1(T[] targetArr, int start, int end) {
-        int l = start;
-        int h = end;
-        T povit = targetArr[start];
-
-        while (l < h) {
-            while (l < h && targetArr[h].compareTo(povit) >= 0) {
-                h--;
-            }
-            if (l < h) {
-                T temp = targetArr[h];
-                targetArr[h] = targetArr[l];
-                targetArr[l] = temp;
-                System.out.print("mr:l=" + (l) + ",h=" + (h) + ",povit=" + povit + ",temp=" + temp + "\n");
-                print(targetArr);
-                l++;
-            }
-
-            while (l < h && targetArr[l].compareTo(povit) <= 0) {
-                l++;
-            }
-
-            if (l < h) {
-                T temp = targetArr[h];
-                targetArr[h] = targetArr[l];
-                targetArr[l] = temp;
-                System.out.print("ml:l=" + (l) + ",h=" + (h) + ",povit=" + povit + ",temp=" + temp + "\n");
-                print(targetArr);
-                h--;
-            }
-        }
-        print(targetArr);
-        System.out.print("l=" + (l) + ",h=" + (h) + ",povit=" + povit + "\n");
-        if (l > start) {
-            quickSort1(targetArr, start, l - 1);
-        }
-        if (h < end) {
-            quickSort1(targetArr, l + 1, end);
-        }
-    }
-
-    private <T extends Comparable<T>> void quickSort2(T[] targetArr, int start, int end) {
-        int i = start + 1, j = end;
-        T key = targetArr[start];
-        if (start >= end) return;
-/*´Ói++ºÍj--Á½¸ö·½ÏòËÑË÷²»Âú×ãÌõ¼şµÄÖµ²¢½»»»
-*
-*Ìõ¼şÎª£ºi++·½ÏòĞ¡ÓÚkey£¬j--·½Ïò´óÓÚkey
-*/
-        while (true) {
-            while (targetArr[j].compareTo(key) > 0) j--;
-            while (targetArr[i].compareTo(key) < 0 && i < j) i++;
-            if (i >= j) break;
-            T t = targetArr[i];
-            targetArr[i] = targetArr[j];
-            targetArr[j] = t;
-            if (targetArr[i] == key) {
-                j--;
-            } else {
-                i++;
-            }
-        }
-
-/*¹Ø¼üÊı¾İ·Åµ½¡®ÖĞ¼ä¡¯*/
-        if (start < j) {
-            T t = targetArr[start];
-            targetArr[start] = targetArr[j];
-            targetArr[j] = t;
-        }
-
-        if (start < i - 1) {
-            this.quickSort2(targetArr, start, i - 1);
-        }
-        if (j + 1 < end) {
-            this.quickSort2(targetArr, j + 1, end);
-        }
-    }
-
-    private <T extends Comparable<T>> void quickSort3(T[] targetArr, int start, int end) {
-        int i = start, j = end;
-        T key = targetArr[start];
-
-        while (i < j) {
-/*°´j--·½Ïò±éÀúÄ¿±êÊı×é£¬Ö±µ½±ÈkeyĞ¡µÄÖµÎªÖ¹*/
-            while (j > i && targetArr[j].compareTo(key) >= 0) {
-                j--;
-            }
-            if (i < j) {
-/*targetArr[i]ÒÑ¾­±£´æÔÚkeyÖĞ£¬¿É½«ºóÃæµÄÊıÌîÈë*/
-                targetArr[i] = targetArr[j];
-                i++;
-            }
-/*°´i++·½Ïò±éÀúÄ¿±êÊı×é£¬Ö±µ½±Èkey´óµÄÖµÎªÖ¹*/
-            while (i < j && targetArr[i].compareTo(key) <= 0)
-/*´Ë´¦Ò»¶¨ÒªĞ¡ÓÚµÈÓÚÁã£¬¼ÙÉèÊı×éÖ®ÄÚÓĞÒ»ÒÚ¸ö1£¬0½»Ìæ³öÏÖµÄ»°£¬¶økeyµÄÖµÓÖÇ¡ÇÉÊÇ1µÄ»°£¬ÄÇÃ´Õâ¸öĞ¡ÓÚµÈÓÚµÄ×÷ÓÃ¾Í»áÊ¹ÏÂÃæµÄifÓï¾äÉÙÖ´ĞĞÒ»ÒÚ´Î¡£*/ {
-                i++;
-            }
-            if (i < j) {
-/*targetArr[j]ÒÑ±£´æÔÚtargetArr[i]ÖĞ£¬¿É½«Ç°ÃæµÄÖµÌîÈë*/
-                targetArr[j] = targetArr[i];
-                j--;
-            }
-        }
-/*´ËÊ±i==j*/
-        targetArr[i] = key;
-
-/*µİ¹éµ÷ÓÃ£¬°ÑkeyÇ°ÃæµÄÍê³ÉÅÅĞò*/
-        if (start < i - 1) {
-            this.quickSort3(targetArr, start, i - 1);
-        }
-/*µİ¹éµ÷ÓÃ£¬°ÑkeyºóÃæµÄÍê³ÉÅÅĞò*/
-        if (j + 1 < end) {
-            this.quickSort3(targetArr, j + 1, end);
-        }
-    }
-
-}
+//package sort;
+//
+//import com.sun.istack.internal.NotNull;
+//
+//public class QuickSort2 {
+//    private static final int N = 20;
+//
+//    private <T extends Comparable<T>> void print(T[] arr) {
+//        for (int i = 0; i < N; i++) {
+//            System.out.print(String.format("%d\t", i));
+//        }
+//        System.out.println();
+//        for (T i : arr) {
+//            System.out.print(i);
+//            System.out.print("\t");
+//        }
+//        System.out.println();
+//    }
+//
+//    public static void main(String[] args) {
+//        int arri[] = new int[]{8, 12, 10, 10, 9, 1, 8, 4, 0, 4, 6, 9, 0, 2, 9, 7, 15, 17, 10, 10};
+//        Item arr[] = new Item[N];
+//        for (int i = 0; i < N; i++) {
+//            arr[i] = new Item(arri[i]);
+//        }
+//        QuickSort2 quickSort = new QuickSort2();
+//
+//        quickSort.print(arr);
+//        quickSort.quickSort1(arr, 0, N - 1);
+//        quickSort.print(arr);
+//    }
+//
+//    private static class Item implements Comparable {
+//
+//        private int key;
+//
+//        public Item(int key) {
+//            this.key = key;
+//        }
+//
+//        public int getKey() {
+//            return key;
+//        }
+//
+//        public void setKey(int key) {
+//            this.key = key;
+//        }
+//
+//
+//        public int compareTo(@NotNull Object o) {
+//            if (o == null) {
+//                return 1;
+//            }
+//            if (o instanceof Item) {
+//                Item item = (Item) o;
+//                return Integer.compare(key, item.key);
+//            }
+//            throw new IllegalArgumentException("o is not instanceof Item");
+//        }
+//
+//        public String toString() {
+//            return String.valueOf(key);
+//        }
+//    }
+//
+//    private <T extends Comparable<T>> void quickSort1(T[] targetArr, int start, int end) {
+//        int l = start;
+//        int h = end;
+//        T povit = targetArr[start];
+//
+//        while (l < h) {
+//            while (l < h && targetArr[h].compareTo(povit) >= 0) {
+//                h--;
+//            }
+//            if (l < h) {
+//                T temp = targetArr[h];
+//                targetArr[h] = targetArr[l];
+//                targetArr[l] = temp;
+//                System.out.print("mr:l=" + (l) + ",h=" + (h) + ",povit=" + povit + ",temp=" + temp + "\n");
+//                print(targetArr);
+//                l++;
+//            }
+//
+//            while (l < h && targetArr[l].compareTo(povit) <= 0) {
+//                l++;
+//            }
+//
+//            if (l < h) {
+//                T temp = targetArr[h];
+//                targetArr[h] = targetArr[l];
+//                targetArr[l] = temp;
+//                System.out.print("ml:l=" + (l) + ",h=" + (h) + ",povit=" + povit + ",temp=" + temp + "\n");
+//                print(targetArr);
+//                h--;
+//            }
+//        }
+//        print(targetArr);
+//        System.out.print("l=" + (l) + ",h=" + (h) + ",povit=" + povit + "\n");
+//        if (l > start) {
+//            quickSort1(targetArr, start, l - 1);
+//        }
+//        if (h < end) {
+//            quickSort1(targetArr, l + 1, end);
+//        }
+//    }
+//
+//    private <T extends Comparable<T>> void quickSort2(T[] targetArr, int start, int end) {
+//        int i = start + 1, j = end;
+//        T key = targetArr[start];
+//        if (start >= end) return;
+///*ä»i++å’Œj--ä¸¤ä¸ªæ–¹å‘æœç´¢ä¸æ»¡è¶³æ¡ä»¶çš„å€¼å¹¶äº¤æ¢
+//*
+//*æ¡ä»¶ä¸ºï¼ši++æ–¹å‘å°äºkeyï¼Œj--æ–¹å‘å¤§äºkey
+//*/
+//        while (true) {
+//            while (targetArr[j].compareTo(key) > 0) j--;
+//            while (targetArr[i].compareTo(key) < 0 && i < j) i++;
+//            if (i >= j) break;
+//            T t = targetArr[i];
+//            targetArr[i] = targetArr[j];
+//            targetArr[j] = t;
+//            if (targetArr[i] == key) {
+//                j--;
+//            } else {
+//                i++;
+//            }
+//        }
+//
+///*å…³é”®æ•°æ®æ”¾åˆ°â€˜ä¸­é—´â€™*/
+//        if (start < j) {
+//            T t = targetArr[start];
+//            targetArr[start] = targetArr[j];
+//            targetArr[j] = t;
+//        }
+//
+//        if (start < i - 1) {
+//            this.quickSort2(targetArr, start, i - 1);
+//        }
+//        if (j + 1 < end) {
+//            this.quickSort2(targetArr, j + 1, end);
+//        }
+//    }
+//
+//    private <T extends Comparable<T>> void quickSort3(T[] targetArr, int start, int end) {
+//        int i = start, j = end;
+//        T key = targetArr[start];
+//
+//        while (i < j) {
+///*æŒ‰j--æ–¹å‘éå†ç›®æ ‡æ•°ç»„ï¼Œç›´åˆ°æ¯”keyå°çš„å€¼ä¸ºæ­¢*/
+//            while (j > i && targetArr[j].compareTo(key) >= 0) {
+//                j--;
+//            }
+//            if (i < j) {
+///*targetArr[i]å·²ç»ä¿å­˜åœ¨keyä¸­ï¼Œå¯å°†åé¢çš„æ•°å¡«å…¥*/
+//                targetArr[i] = targetArr[j];
+//                i++;
+//            }
+///*æŒ‰i++æ–¹å‘éå†ç›®æ ‡æ•°ç»„ï¼Œç›´åˆ°æ¯”keyå¤§çš„å€¼ä¸ºæ­¢*/
+//            while (i < j && targetArr[i].compareTo(key) <= 0)
+///*æ­¤å¤„ä¸€å®šè¦å°äºç­‰äºé›¶ï¼Œå‡è®¾æ•°ç»„ä¹‹å†…æœ‰ä¸€äº¿ä¸ª1ï¼Œ0äº¤æ›¿å‡ºç°çš„è¯ï¼Œè€Œkeyçš„å€¼åˆæ°å·§æ˜¯1çš„è¯ï¼Œé‚£ä¹ˆè¿™ä¸ªå°äºç­‰äºçš„ä½œç”¨å°±ä¼šä½¿ä¸‹é¢çš„ifè¯­å¥å°‘æ‰§è¡Œä¸€äº¿æ¬¡ã€‚*/ {
+//                i++;
+//            }
+//            if (i < j) {
+///*targetArr[j]å·²ä¿å­˜åœ¨targetArr[i]ä¸­ï¼Œå¯å°†å‰é¢çš„å€¼å¡«å…¥*/
+//                targetArr[j] = targetArr[i];
+//                j--;
+//            }
+//        }
+///*æ­¤æ—¶i==j*/
+//        targetArr[i] = key;
+//
+///*é€’å½’è°ƒç”¨ï¼ŒæŠŠkeyå‰é¢çš„å®Œæˆæ’åº*/
+//        if (start < i - 1) {
+//            this.quickSort3(targetArr, start, i - 1);
+//        }
+///*é€’å½’è°ƒç”¨ï¼ŒæŠŠkeyåé¢çš„å®Œæˆæ’åº*/
+//        if (j + 1 < end) {
+//            this.quickSort3(targetArr, j + 1, end);
+//        }
+//    }
+//
+//}

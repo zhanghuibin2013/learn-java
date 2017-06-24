@@ -1102,4 +1102,52 @@ public class Solution {
     public void LRUCacheTest() {
         System.out.println(findMedianSortedArrays(new int[]{1, 2, 3, 4, 5, 6}, new int[]{2, 3, 4, 5}));
     }
+
+    @Test
+    public void multiply() {
+        System.out.println(multiply("111111", "999999999999999999999999999999999999999999999999999999999999999999999999999999"));
+    }
+
+    /**
+     * @param num1 a non-negative integers
+     * @param num2 a non-negative integers
+     * @return return product of num1 and num2
+     */
+    public String multiply(String num1, String num2) {
+        // Write your code here
+
+        int[] result = new int[num1.length() + num2.length()];
+        int maxIndex = 0;
+        for (int i = 0; i < num1.length(); i++) {
+            int forward = 0;
+            int ci = (int) num1.charAt(num1.length() - 1 - i) - '0';
+
+            for (int j = 0; j < num2.length(); j++) {
+                int cj = (int) num2.charAt(num2.length() - 1 - j) - '0';
+                int multi = ci * cj + forward + result[i + j];
+                if (multi > 10) {
+                    forward = multi / 10;
+                    multi = multi % 10;
+                } else {
+                    forward = 0;
+                }
+                result[i + j] = multi;
+
+                if (multi > 0 || forward > 0) {
+                    if (maxIndex < i + j) {
+                        maxIndex = i + j;
+                    }
+                }
+            }
+            if (forward > 0) {
+                maxIndex = i + num2.length();
+                result[i + num2.length()] = forward;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = maxIndex; i >= 0; i--) {
+            sb.append(String.valueOf(result[i]));
+        }
+        return sb.toString();
+    }
 }

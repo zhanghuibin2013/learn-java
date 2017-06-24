@@ -41,14 +41,14 @@ public class TestTrhead implements Runnable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public static void main(String[] args){
-        Runnable thread1 = new TestTrhead("thread1");
-        Runnable thread2 = new TestTrhead("thread2");
-        Thread th1 = new Thread(thread1);
-        Thread th2 = new Thread(thread2);
-        th1.start();
-        th2.start();
-
-    }
+//
+//    public static void main(String[] args){
+//        Runnable thread1 = new TestTrhead("thread1");
+//        Runnable thread2 = new TestTrhead("thread2");
+//        Thread th1 = new Thread(thread1);
+//        Thread th2 = new Thread(thread2);
+//        th1.start();
+//        th2.start();
+//
+//    }
 }
