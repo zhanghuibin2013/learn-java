@@ -1150,4 +1150,149 @@ public class Solution {
         }
         return sb.toString();
     }
+
+
+    @Test
+    public void binaryRepresentation() {
+        System.out.println(binaryRepresentation("17817287.6418609619140625"));
+
+    }
+
+    /**
+     * @param n: Given a decimal number that is passed in as a string
+     * @return: A string
+     */
+    public String binaryRepresentation(String n) {
+        // write your code here
+        int point = n.indexOf('.');
+        float m = Float.valueOf(n);
+        String result = "";
+        if (point > 0) {
+            result += binaryRepresentation(Integer.valueOf(n.substring(0, point)));
+            if (result.length() <= 0) {
+                result = "0";
+            }
+            String s = binaryRepresentation(Double.valueOf(n.substring(point)));
+            if (s.length() > 0) {
+                if (s.length() > 32) {
+                    return "ERROR";
+                }
+                result += ".";
+                result += s;
+            }
+        } else {
+            if (n.compareTo("2147483647") <= 0) {
+                result += binaryRepresentation(Integer.valueOf(n));
+            } else {
+                return "ERROR";
+            }
+        }
+        return result;
+    }
+
+    private String binaryRepresentation(int n) {
+        String result = "";
+        while (n > 0) {
+            result = (n & 1) + result;
+            n = n >> 1;
+        }
+        return result;
+    }
+
+    private String binaryRepresentation(double n) {
+        String result = "";
+        while (n != 0) {
+            n = n * 2;
+            int n1 = (int) n;
+            result = result + (n1 & 1);
+            n -= n1;
+        }
+        return result;
+    }
+
+    @Test
+    public void guessNumber() {
+        re = 4;
+        System.out.print(guessNumber(10));
+    }
+
+    private int re = 4;
+
+    private int guess(int num) {
+        return compare(num, re);
+    }
+
+    private int compare(int x, int y) {
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+    }
+
+    /**
+     * @param n an integer
+     * @return the number you guess
+     */
+    public int guessNumber(int n) {
+        // Write your code here
+        int l = 1, r = n;
+        while (l < r) {
+            int m = (l + r) / 2;
+            int re = guess(m);
+            if (re == 0) {
+                return m;
+            }
+            if (re == -1) {
+                l = m + 1;
+            } else {
+                r = m - 1;
+            }
+        }
+        return l;
+    }
+
+    @Test
+    public void lots() {
+        List<Integer> result = lots(1, 32, 7);
+        System.out.println(result.size());
+//        for (int i : result) {
+//            System.out.println(Integer.toBinaryString(i));
+//        }
+    }
+
+    public List<Integer> lots(int start, int end, int count) {
+        if (count == 1) {
+            List<Integer> result = new ArrayList<Integer>();
+            for (int i = start; i <= end; i++) {
+                result.add(1 << (end - i));
+            }
+            return result;
+        }
+        List<Integer> result = new ArrayList<Integer>();
+        for (int i = start; i <= end - count + 1; i++) {
+            int head = 1 << (end - i);
+            List<Integer> result2 = lots(i + 1, end, count - 1);
+            for (int j : result2) {
+                result.add(j + head);
+            }
+        }
+        return result;
+    }
+
+    @Test
+    public void testHashCode() {
+        System.out.println(hashCode("ubuntu".toCharArray(), 1007));
+    }
+
+    /**
+     * @param key:       A String you should hash
+     * @param HASH_SIZE: An integer
+     * @return an integer
+     */
+    public int hashCode(char[] key, int HASH_SIZE) {
+        int result = 0;
+        for(int i=0;i<key.length;i++){
+            result=result*33+(int)key[i];
+            //result+=(((int)key[i])*(int)Math.pow(33,j))%HASH_SIZE;
+        }
+        return result % HASH_SIZE;
+        // write your code here
+    }
 }
