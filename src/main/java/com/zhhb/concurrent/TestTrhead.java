@@ -1,4 +1,4 @@
-package concurrent;
+package com.zhhb.concurrent;
 
 /**
  * Created with IntelliJ IDEA.

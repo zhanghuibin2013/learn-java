@@ -1,4 +1,4 @@
-package gc;
+package com.zhhb.gc;
 
 /**
  * 此代码演示了两点：

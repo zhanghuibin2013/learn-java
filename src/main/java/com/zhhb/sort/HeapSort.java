@@ -1,4 +1,4 @@
-package sort;
+package com.zhhb.sort;
 
 /**
  * Created by zhanghuibin on 2017/5/31.

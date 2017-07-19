@@ -1,8 +1,11 @@
-package lintcode;
+package com.zhhb.lintcode;
 
 import org.junit.Test;
 
+import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by zhanghuibin on 2017/6/1.
@@ -11,7 +14,7 @@ public class Solution {
 
     @Test()
     public void threeSum() {
-        List<List<Integer>> lists = threeSum(new int[]{-1, 0, 1, 2, -1, -4});
+        ArrayList<ArrayList<Integer>> lists = threeSum(new int[]{-2, -3, 5, -1, -4, 5, -11, 7, 1, 2, 3, 4, -7, -1, -2, -3, -4, -5});
         if (lists != null && lists.size() > 0) {
             for (List<Integer> list : lists) {
                 System.out.printf("(%d,%d,%d)%n", list.get(0), list.get(1), list.get(2));
@@ -19,40 +22,40 @@ public class Solution {
         }
     }
 
-    public List<List<Integer>> threeSum(int[] nums) {
-        Arrays.sort(nums);
-        List<List<Integer>> lists = new ArrayList<List<Integer>>();
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] > 0) {
-                break;
-            }
-            if (i > 0 && nums[i] == nums[i - 1]) {
-                continue;
-            }
-            for (int j = i + 1; j < nums.length; j++) {
-                if (nums[i] + nums[j] > 0) {
-                    break;
-                }
-                if (j > i + 1 && nums[j] == nums[j - 1]) {
-                    continue;
-                }
-                for (int k = j + 1; k < nums.length; k++) {
-                    if (k > j + 1 && nums[k] == nums[k - 1]) {
-                        continue;
-                    }
-                    int sum = nums[i] + nums[j] + nums[k];
-                    if (sum == 0) {
-                        List<Integer> list = Arrays.asList(nums[i], nums[j], nums[k]);
-                        Collections.sort(list);
-                        lists.add(list);
-                    } else if (sum > 0) {
-                        break;
-                    }
-                }
-            }
-        }
-        return lists;
-    }
+//    public List<List<Integer>> threeSum(int[] nums) {
+//        Arrays.sort(nums);
+//        List<List<Integer>> lists = new ArrayList<List<Integer>>();
+//        for (int i = 0; i < nums.length; i++) {
+//            if (nums[i] > 0) {
+//                break;
+//            }
+//            if (i > 0 && nums[i] == nums[i - 1]) {
+//                continue;
+//            }
+//            for (int j = i + 1; j < nums.length; j++) {
+//                if (nums[i] + nums[j] > 0) {
+//                    break;
+//                }
+//                if (j > i + 1 && nums[j] == nums[j - 1]) {
+//                    continue;
+//                }
+//                for (int k = j + 1; k < nums.length; k++) {
+//                    if (k > j + 1 && nums[k] == nums[k - 1]) {
+//                        continue;
+//                    }
+//                    int sum = nums[i] + nums[j] + nums[k];
+//                    if (sum == 0) {
+//                        List<Integer> list = Arrays.asList(nums[i], nums[j], nums[k]);
+//                        Collections.sort(list);
+//                        lists.add(list);
+//                    } else if (sum > 0) {
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        return lists;
+//    }
 
     @Test
     public void isValid() {
@@ -155,19 +158,13 @@ public class Solution {
 
     @Test
     public void updateBits() {
-        System.out.println(updateBits(-123, 45, 21, 26));
+        System.out.println(updateBits(1, -1, 0, 31));
     }
 
-    /**
-     * @param n, m: Two integer
-     * @param i, j: Two bit positions
-     *           return: An integer
-     */
     public int updateBits(int n, int m, int i, int j) {
-        if (j - i == 31) {
-            return m;
-        }
-        return (n << (32 - i) >> (32 - i)) + (m << (32 - j) >> (32 - j) << i) + (n >> j << j);
+        int maskM = (1 << (j - i + 1)) - 1;
+        int maskN = ~(maskM << i);
+        return (maskN & n) + ((maskM & m) << i);
     }
 
     private class ListNode {
@@ -196,7 +193,15 @@ public class Solution {
         }
 
         public String toString() {
-            return val + "->" + next;
+            StringBuilder stringBuilder = new StringBuilder();
+            ListNode p = this;
+            while (p != null) {
+                stringBuilder.append(p.val).append("->");
+                p = p.next;
+            }
+            stringBuilder.append("null");
+            return stringBuilder.toString();
+//            return val + "->" + next;
         }
     }
 
@@ -572,6 +577,10 @@ public class Solution {
                 this.val = val;
                 this.next = null;
             }
+
+            public String toString() {
+                return "{" + key + ":" + val + "}" + "->" + next;
+            }
         }
 
         private int maxCapacity;
@@ -597,10 +606,20 @@ public class Solution {
         // @return an integer
         private ListNode getNode(int key) {
             // write your code here
+            if (cache == null) {
+                return null;
+            }
+            if (cache.key == key) {
+                return cache;
+            }
             ListNode p = cache;
-            while (p != null) {
-                if (p.key == key) {
-                    return p;
+            while (p.next != null) {
+                if (p.next.key == key) {
+                    ListNode node = p.next;
+                    p.next = node.next;
+                    node.next = cache;
+                    cache = node;
+                    return node;
                 }
                 p = p.next;
             }
@@ -633,12 +652,32 @@ public class Solution {
     }
 
     @Test
-    public void sortList() {
-        ListNode head = new ListNode(4);
-        head = new ListNode(31, head);
-        head = new ListNode(25, head);
-        head = new ListNode(25, head);
-        head = new ListNode(21, head);
+    public void sortList() throws IOException {
+        InputStreamReader fileInputStream = new InputStreamReader(new FileInputStream("E:\\12.in"));
+        BufferedReader reader = new BufferedReader(fileInputStream);
+        String[] strInput = reader.readLine().split("->");
+        int[] ints = new int[strInput.length - 1];
+        for (int i = 0; i < strInput.length - 1; i++) {
+            ints[i] = Integer.valueOf(strInput[i]);
+        }
+        ListNode head = null;
+        ListNode p = null;
+        for (int anInt : ints) {
+            if (head == null) {
+                head = p = new ListNode(anInt);
+            } else {
+                p.next = new ListNode(anInt);
+                p = p.next;
+            }
+        }
+        print(head);
+        head = sortList(head);
+        print(head);
+    }
+
+    @Test
+    public void sortList2() throws IOException {
+        ListNode head = new ListNode(new int[]{1, -1});
         print(head);
         head = sortList(head);
         print(head);
@@ -648,68 +687,68 @@ public class Solution {
         System.out.println(head);
     }
 
-    /**
-     * @param head: The head of linked list.
-     * @return: You should return the head of the sorted linked list,
-     * using constant space complexity.
-     */
-    public ListNode sortList(ListNode head) {
-        // write your code here
-        if (head == null || head.next == null) {
-            return head;
-        }
-        return sortList(head, null);
-    }
-
-    public ListNode sortList(ListNode head, ListNode end) {
-        if (head.next == end) {
-            if (end == null) {
-                return head;
-            }
-            if (head.val > end.val) {
-                head.next = end.next;
-                end.next = head.next;
-                return end;
-            }
-            return head;
-        }
-        ListNode p = null;
-        ListNode t = head;
-        while (t.next != null) {
-            if (p == null) {
-                if (head.val > t.next.val) {
-                    ListNode next = t.next;
-                    t.next = next.next;
-                    next.next = head;
-                    p = head = next;
-                } else {
-                    t = t.next;
-                }
-            } else {
-                if (p.next.val > t.next.val) {
-                    ListNode next = t.next;
-                    t.next = next.next;
-                    next.next = p.next;
-                    p.next = next;
-                    p = p.next;
-                } else {
-                    t = t.next;
-                }
-            }
-        }
-
-        if (p == null) {
-            head.next = sortList(head.next, end);
-            return head;
-        }
-        if (p.next != null && p.next.next != end) {
-            p.next.next = sortList(p.next.next, end);
-        }
-        if (p != head) {
-            return sortList(head, p.next);
-        }
-        return head;
-    }
+//    /**
+//     * @param head: The head of linked list.
+//     * @return: You should return the head of the sorted linked list,
+//     * using constant space complexity.
+//     */
+//    public ListNode sortList(ListNode head) {
+//        // write your code here
+//        if (head == null || head.next == null) {
+//            return head;
+//        }
+//        return sortList(head, null);
+//    }
+//
+//    public ListNode sortList(ListNode head, ListNode end) {
+//        if (head.next == end) {
+//            if (end == null) {
+//                return head;
+//            }
+//            if (head.val > end.val) {
+//                head.next = end.next;
+//                end.next = head.next;
+//                return end;
+//            }
+//            return head;
+//        }
+//        ListNode p = null;
+//        ListNode t = head;
+//        while (t.next != null) {
+//            if (p == null) {
+//                if (head.val > t.next.val) {
+//                    ListNode next = t.next;
+//                    t.next = next.next;
+//                    next.next = head;
+//                    p = head = next;
+//                } else {
+//                    t = t.next;
+//                }
+//            } else {
+//                if (p.next.val > t.next.val) {
+//                    ListNode next = t.next;
+//                    t.next = next.next;
+//                    next.next = p.next;
+//                    p.next = next;
+//                    p = p.next;
+//                } else {
+//                    t = t.next;
+//                }
+//            }
+//        }
+//
+//        if (p == null) {
+//            head.next = sortList(head.next, end);
+//            return head;
+//        }
+//        if (p.next != null && p.next.next != end) {
+//            p.next.next = sortList(p.next.next, end);
+//        }
+//        if (p != head) {
+//            return sortList(head, p.next);
+//        }
+//        return head;
+//    }
 
     @Test
     public void mergeKLists() {
@@ -1100,6 +1139,351 @@ public class Solution {
 
     @Test
     public void LRUCacheTest() {
-        System.out.println(findMedianSortedArrays(new int[]{1, 2, 3, 4, 5, 6}, new int[]{2, 3, 4, 5}));
+        LRUCache cache = new LRUCache(2);
+        cache.set(2, 1);
+        cache.set(1, 1);
+        System.out.println(cache.get(2));
+        cache.set(4, 1);
+        System.out.println(cache.get(1));
+        System.out.println(cache.get(2));
+//        System.out.println(findMedianSortedArrays(new int[]{1, 2, 3, 4, 5, 6}, new int[]{2, 3, 4, 5}));
+    }
+
+    private class Point {
+        int x;
+        int y;
+
+        Point() {
+            x = 0;
+            y = 0;
+        }
+
+        Point(int a, int b) {
+            x = a;
+            y = b;
+        }
+    }
+
+    @Test
+    public void maxPoints() {
+        Pattern pattern = Pattern.compile("(-?\\d+),(-?\\d+)");
+        Matcher matcher = pattern.matcher("[[-54,-297],[-36,-222],[3,-2],[30,53],[-5,1],[-36,-222],[0,2],[1,3],[6,-47],[0,4],[2,3],[5,0],[48,128],[24,28],[0,-5],[48,128],[-12,-122],[-54,-297],[-42,-247],[-5,0],[2,4],[0,0],[54,153],[-30,-197],[4,5],[4,3],[-42,-247],[6,-47],[-60,-322],[-4,-2],[-18,-147],[6,-47],[60,178],[30,53],[-5,3],[-42,-247],[2,-2],[12,-22],[24,28],[0,-72],[3,-4],[-60,-322],[48,128],[0,-72],[-5,3],[5,5],[-24,-172],[-48,-272],[36,78],[-3,3]]");
+        List<Point> pointList = new ArrayList<Point>();
+        while (matcher.find()) {
+            pointList.add(new Point(Integer.valueOf(matcher.group(1)), Integer.valueOf(matcher.group(2))));
+
+        }
+        Point[] points = new Point[pointList.size()];
+        pointList.toArray(points);
+        System.out.println(maxPoints(points));
+    }
+
+    /**
+     * @param points an array of point
+     * @return an integer
+     */
+    public int maxPoints(Point[] points) {
+        if (points == null) {
+            return 0;
+        }
+        if (points.length <= 2) {
+            return points.length;
+        }
+        // Write your code here
+        int result = 2;
+        for (int i = 0; i < points.length; i++) {
+            Point pointI = points[i];
+            Map<Double, Integer> rates = new HashMap<Double, Integer>();
+            int resultI = 2;
+            for (int j = i + 1; j < points.length; j++) {
+                Point pointJ = points[j];
+                double diffX = pointJ.x - pointI.x;
+                double rate;
+                int diffY = pointJ.y - pointI.y;
+                if (diffX == 0) {
+                    if (diffY == 0) {
+                        rate = Double.MIN_VALUE;
+                    } else {
+                        rate = Double.MAX_VALUE;
+                    }
+                } else {
+                    rate = diffY / diffX;
+                }
+                if (rates.containsKey(rate)) {
+                    rates.put(rate, rates.get(rate) + 1);
+                } else {
+                    rates.put(rate, 1);
+                }
+            }
+            for (Map.Entry<Double, Integer> entry : rates.entrySet()) {
+                if (entry.getKey() == Double.MIN_VALUE) {
+                    continue;
+                }
+                if (resultI < entry.getValue() + 1) {
+                    resultI = entry.getValue() + 1;
+                }
+            }
+            if (rates.containsKey(Double.MIN_VALUE)) {
+                resultI += rates.get(Double.MIN_VALUE);
+            }
+            if (result < resultI) {
+                result = resultI;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param head: The head of linked list.
+     * @return: You should return the head of the sorted linked list,
+     * using constant space complexity.
+     */
+    public ListNode sortList(ListNode head) {
+        System.out.println(System.currentTimeMillis());
+        try {
+            return mergeSortList(head);
+        } finally {
+            System.out.println(System.currentTimeMillis());
+        }
+        // write your code here
+    }
+
+    public ListNode quickSortList(ListNode head, ListNode end) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode node = head;
+        ListNode preNode = null;
+        ListNode p = head;
+        while (p.next != end) {
+            ListNode next = p.next;
+            if (next.val < node.val) {
+                p.next = next.next;
+                next.next = head;
+                if (preNode == null) {
+                    preNode = next;
+                }
+                head = next;
+            } else {
+                p = p.next;
+            }
+        }
+        if (head != node && head.next != head) {
+            head = quickSortList(head, node);
+        }
+        if (node != end && node.next != end) {
+            node.next = quickSortList(node.next, end);
+        }
+        return head;
+        // write your code here
+    }
+
+
+    @Test
+    public void sortColors() {
+        int[] nums = new int[]{2, 0, 0, 1, 2, 0, 2};
+        sortColors(nums);
+        System.out.println(Arrays.toString(nums));
+    }
+
+    /**
+     * @param nums: A list of integer which is 0, 1 or 2
+     * @return: nothing
+     */
+    public void sortColors(int[] nums) {
+        // write your code here
+        int r = -1;
+        int b = nums.length;
+        for (int i = 0; i < nums.length && i < b; i++) {
+            if (nums[i] == 0) {
+                if (i == r + 1) {
+                    r++;
+                } else {
+                    int t = nums[i];
+                    nums[i] = nums[++r];
+                    nums[r] = t;
+                    i--;
+                }
+            } else if (nums[i] == 2) {
+                if (i == b - 1) {
+                    b--;
+                } else {
+                    int t = nums[i];
+                    nums[i] = nums[--b];
+                    nums[b] = t;
+                    i--;
+                }
+            }
+        }
+    }
+
+
+    public ListNode mergeSortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode rhalf = mergeSortList(slow.next);
+        slow.next = null;
+        ListNode lhalf = mergeSortList(head);
+        return merge(lhalf, rhalf);
+    }
+
+    public ListNode merge(ListNode l, ListNode r) {
+        ListNode result = null;
+        ListNode p = null;
+
+        ListNode t = null;
+        while (l != null && r != null) {
+            if (l.val <= r.val) {
+                t = l;
+                l = l.next;
+            } else {
+                t = r;
+                r = r.next;
+            }
+            if (p == null) {
+                result = p = t;
+            } else {
+                p.next = t;
+                p = t;
+            }
+        }
+        if (l != null) {
+            t = l;
+        } else {
+            t = r;
+        }
+        if (p == null) {
+            result = p = t;
+        } else {
+            p.next = t;
+        }
+        return result;
+    }
+
+    /**
+     * @param numbers : Give an array numbers of n integer
+     * @return : Find all unique triplets in the array which gives the sum of zero.
+     */
+    public ArrayList<ArrayList<Integer>> threeSum(int[] numbers) {
+        // write your code here
+        Arrays.sort(numbers);
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        for (int i = 0; i < numbers.length; i++) {
+            map.put(numbers[i], i);
+        }
+        ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+
+        ArrayList<Integer> temp = null;
+        for (int i = 0; i < numbers.length - 1; i++) {
+            for (int j = i + 1; j < numbers.length; j++) {
+                int c = -numbers[i] - numbers[j];
+                if (map.containsKey(c) && map.get(c) > j) {
+                    if (temp != null) {
+                        if (temp.get(0) == numbers[i] && temp.get(1) == numbers[j]) {
+                            continue;
+                        }
+                    }
+                    ArrayList<Integer> list = new ArrayList<Integer>();
+                    list.add(numbers[i]);
+                    list.add(numbers[j]);
+                    list.add(c);
+                    result.add(list);
+                    temp = list;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Test
+    public void evalRPN() {
+//        int[] dd = new int[1024 * 1024];
+        System.out.print(evalRPN(new String[]{"0", "3", "/"}));
+    }
+
+    public int evalRPN(String[] tokens) {
+        // Write your code here
+        Stack<Integer> stack = new Stack<>();
+        for (String str : tokens) {
+            switch (str) {
+                case "+": {
+                    int n1 = stack.pop();
+                    int n2 = stack.pop();
+                    int n3 = n2 + n1;
+                    stack.push(n3);
+                    break;
+                }
+                case "-": {
+                    int n1 = stack.pop();
+                    int n2 = stack.pop();
+                    int n3 = n2 - n1;
+                    stack.push(n3);
+                    break;
+                }
+                case "*": {
+                    int n1 = stack.pop();
+                    int n2 = stack.pop();
+                    int n3 = n2 * n1;
+                    stack.push(n3);
+                    break;
+                }
+                case "/": {
+                    int n1 = stack.pop();
+                    int n2 = stack.pop();
+                    int n3 = n2 / n1;
+                    stack.push(n3);
+                    break;
+                }
+                default:
+                    stack.push(Integer.valueOf(str));
+                    break;
+            }
+        }
+        return stack.pop();
+    }
+
+    static class User {
+        private String name;
+        private int age;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public User(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+    }
+
+    @Test
+    public void testChangeValue() {
+        User user = new User("zhanghuibin", 30);
+        System.out.println(user.getName());
+        changeValue(user);
+        System.out.println(user.getName());
+    }
+
+    public void changeValue(User user) {
+        user = new User("sunxiaomei", 31);
     }
 }
