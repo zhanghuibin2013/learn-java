@@ -58,10 +58,9 @@ public class TimeServer {
     private class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
         protected void initChannel(SocketChannel socketChannel) throws Exception {
-            socketChannel.pipeline()
-                    .addLast(new LineBasedFrameDecoder(1024))
-                    .addLast(new StringDecoder())
-                    .addLast(new TimeServerHandler());
+            socketChannel.pipeline().addLast(new LineBasedFrameDecoder(1024));
+            socketChannel.pipeline().addLast(new StringDecoder());
+            socketChannel.pipeline().addLast(new TimeServerHandler());
         }
     }
 
@@ -69,12 +68,13 @@ public class TimeServer {
         private int counter;
 
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-            ByteBuf buf = (ByteBuf) msg;
-            byte[] req = new byte[buf.readableBytes()];
-            buf.readBytes(req);
-            String body = new String(req, "UTF-8");
+//            ByteBuf buf = (ByteBuf) msg;
+//            byte[] req = new byte[buf.readableBytes()];
+//            buf.readBytes(req);
+            String body = (String) msg;
             System.out.println("The time server receive order : " + body + "; counter = " + (++counter));
-            String currentTime = "QUERY TIME ORDER\r\n".equalsIgnoreCase(body) ? new Date(System.currentTimeMillis()).toString() : "BAD ORDER";
+            String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date(System.currentTimeMillis()).toString() : "BAD ORDER";
+            currentTime += System.getProperty("line.separator");
             ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
             ctx.write(resp);
         }

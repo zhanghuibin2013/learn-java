@@ -7,6 +7,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -48,6 +50,8 @@ public class TimeClient {
 
     private class TimeClientChannel extends ChannelInitializer<SocketChannel> {
         protected void initChannel(SocketChannel ch) throws Exception {
+            ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
+            ch.pipeline().addLast(new StringDecoder());
             ch.pipeline().addLast(new TimeClientHandler());
         }
     }
@@ -56,7 +60,7 @@ public class TimeClient {
         private byte[] req;
 
         private TimeClientHandler() {
-            req = "QUERY TIME ORDER\r\n".getBytes();
+            req = ("QUERY TIME ORDER" + System.getProperty("line.separator")).getBytes();
         }
 
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -68,12 +72,12 @@ public class TimeClient {
         }
 
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-            ByteBuf buf = (ByteBuf) msg;
-            byte[] req = new byte[buf.readableBytes()];
-            buf.readBytes(req);
-            String body = new String(req, "UTF-8");
+//            ByteBuf buf = (ByteBuf) msg;
+//            byte[] req = new byte[buf.readableBytes()];
+//            buf.readBytes(req);
+            String body = (String) msg;
             System.out.println("Now is : " + body);
-            ctx.close();
+//            ctx.close();
         }
 
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
