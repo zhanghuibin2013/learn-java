@@ -43,17 +43,17 @@ public class TestThread2 implements Runnable {
 //        this.name = name;
 //    }
 
-    public static void main(String[] args) throws InterruptedException {
-        TestThread2 testThread1 = new TestThread2();
-
-        Thread thread1 = new Thread(testThread1);
-        Thread thread2 = new Thread(testThread1);
-
-        thread1.start();
-        Thread.sleep(1000);
-        thread2.start();
-
-
-    }
+//    public static void main(String[] args) throws InterruptedException {
+//        TestThread2 testThread1 = new TestThread2();
+//
+//        Thread thread1 = new Thread(testThread1);
+//        Thread thread2 = new Thread(testThread1);
+//
+//        thread1.start();
+//        Thread.sleep(1000);
+//        thread2.start();
+//
+//
+//    }
 
 }
