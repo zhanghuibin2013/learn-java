@@ -114,15 +114,16 @@ public class HttpFileServer {
             ChannelFuture sendFileFuture = ctx.write(new ChunkedFile(randomAccessFile, 0, fileLength, 8192), ctx.newProgressivePromise());
             sendFileFuture.addListener(new ChannelProgressiveFutureListener() {
                 public void operationProgressed(ChannelProgressiveFuture channelProgressiveFuture, long l, long l2) throws Exception {
-
+                    System.out.println(l);
                 }
 
                 public void operationComplete(ChannelProgressiveFuture channelProgressiveFuture) throws Exception {
+                    System.out.println(channelProgressiveFuture);
                     //To change body of implemented methods use File | Settings | File Templates.
                 }
             });
-//            ctx.writeAndFlush(response)
-//                    .addListener(ChannelFutureListener.CLOSE);
+            ctx.writeAndFlush(response)
+                    .addListener(ChannelFutureListener.CLOSE);
         }
 
         private boolean isKeepAlive(FullHttpRequest request) {

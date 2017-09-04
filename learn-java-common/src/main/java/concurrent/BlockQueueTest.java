@@ -1,6 +1,5 @@
 package concurrent;
 
-import org.elasticsearch.common.collect.HppcMaps;
 import org.junit.Test;
 
 /**
