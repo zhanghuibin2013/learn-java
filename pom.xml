@@ -4,17 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!-- Inherit defaults from Spring Boot -->
-    <!--<parent>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-starter-parent</artifactId>-->
-        <!--<version>1.4.0.BUILD-SNAPSHOT</version>-->
-    <!--</parent>-->
+
     <groupId>org.le.learn</groupId>
     <artifactId>learn-java</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>learn-java-agent</module>
         <module>learn-java-common</module>
+        <module>learn-java-activiti</module>
+        <module>learn-java-lintcode</module>
+        <module>learn-java-spring-boot</module>
     </modules>
     <packaging>pom</packaging>
     <dependencies>
@@ -46,25 +45,12 @@
             <artifactId>log4j-api</artifactId>
             <version>2.6.2</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-web</artifactId>-->
-        <!--</dependency>-->
+
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>5.0.0.Alpha1</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>io.netty</groupId>-->
-            <!--<artifactId>netty-codec</artifactId>-->
-            <!--<version>5.0.0.Alpha1</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>io.netty</groupId>-->
-            <!--<artifactId>netty-codec-http</artifactId>-->
-            <!--<version>5.0.0.Alpha1</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.msgpack</groupId>
             <artifactId>msgpack</artifactId>
@@ -89,10 +75,6 @@
     <!-- Package as an executable jar -->
     <build>
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.springframework.boot</groupId>-->
-                <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
