@@ -42,10 +42,12 @@ public class TimeServer {
                 System.out.println("The time server is strt in port : " + port);
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File
-                System.exit(1);// | Settings | File Templates.
+                // | Settings | File Templates.
+                System.exit(1);
             }
         }
 
+        @Override
         public void run() {
             while (!stop) {
                 try {

@@ -40,6 +40,7 @@ public class TimeClient {
             }
         }
 
+        @Override
         public void run() {
             this.latch = new CountDownLatch(1);
             this.client.connect(new InetSocketAddress(host, port), this, new ConnectCompletionHandler());
@@ -56,6 +57,7 @@ public class TimeClient {
         }
 
         private class ConnectCompletionHandler implements CompletionHandler<Void, AsyncTimeClientHandler> {
+            @Override
             public void completed(Void result, AsyncTimeClientHandler attachment) {
                 byte[] bytes = "QUERY TIME ORDER\r\n".getBytes();
                 ByteBuffer writeBuffer = ByteBuffer.allocate(bytes.length);
@@ -64,6 +66,7 @@ public class TimeClient {
                 client.write(writeBuffer, writeBuffer, new WriteCompletionHandler());
             }
 
+            @Override
             public void failed(Throwable exc, AsyncTimeClientHandler attachment) {
                 try {
                     client.close();
@@ -75,6 +78,7 @@ public class TimeClient {
         }
 
         private class WriteCompletionHandler implements CompletionHandler<Integer, ByteBuffer> {
+            @Override
             public void completed(Integer result, ByteBuffer attachment) {
                 if (attachment.hasRemaining()) {
                     client.write(attachment, attachment, this);
@@ -85,6 +89,7 @@ public class TimeClient {
                 }
             }
 
+            @Override
             public void failed(Throwable exc, ByteBuffer attachment) {
                 try {
                     client.close();
@@ -96,6 +101,7 @@ public class TimeClient {
         }
 
         private class ReadCompletionHandler implements CompletionHandler<Integer, ByteBuffer> {
+            @Override
             public void completed(Integer result, ByteBuffer attachment) {
                 attachment.flip();
                 byte[] bytes = new byte[attachment.remaining()];
@@ -110,6 +116,7 @@ public class TimeClient {
                 latch.countDown();
             }
 
+            @Override
             public void failed(Throwable exc, ByteBuffer attachment) {
                 try {
                     client.close();

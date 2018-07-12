@@ -21,6 +21,7 @@ public class Program {
         ThreadGroup tg = new ThreadGroup("tg");
 
         new Thread(tg, new Runnable() {
+            @Override
             public void run() {
                 lock.lock();
                 for (int i = 0; i < N; i++) {
@@ -37,6 +38,7 @@ public class Program {
 //        t1.isInterrupted();
 
         Thread t2 = new Thread(new Runnable() {
+            @Override
             public void run() {
                 lock.lock();
                 for (int i = 0; i < N; i++) {
@@ -53,6 +55,7 @@ public class Program {
         t2.start();
 
         Thread t3 = new Thread(new Runnable() {
+            @Override
             public void run() {
                 lock.lock();
                 for (int i = 0; i < N; i++) {
@@ -69,6 +72,7 @@ public class Program {
         t3.start();
 
         new Thread(tg, new Runnable() {
+            @Override
             public void run() {
                 lock.lock();
                 for (int i = 0; i < N; i++) {

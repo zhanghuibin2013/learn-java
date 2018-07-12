@@ -49,6 +49,7 @@ public class TimeClient {
             }
         }
 
+        @Override
         public void run() {
             try {
                 doConnect();

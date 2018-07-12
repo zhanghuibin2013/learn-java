@@ -12,6 +12,7 @@ import java.util.UUID;
 public class TestThread2 implements Runnable {
     private String name;
 
+    @Override
     public void run() {
         String uuid = String.valueOf(UUID.randomUUID());
         System.out.println(uuid);

@@ -29,6 +29,7 @@ public class ThreadA {
         int total;
         boolean completed = false;
 
+        @Override
         public void run() {
             synchronized (lock) {
                 for (int i = 0; i < 101; i++) {

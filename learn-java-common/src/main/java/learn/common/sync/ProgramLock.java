@@ -19,6 +19,7 @@ public class ProgramLock {
     @Test
     public void main() throws InterruptedException {
         Runnable target = new Runnable() {
+            @Override
             public void run() {
                 lock.lock();
                 try {

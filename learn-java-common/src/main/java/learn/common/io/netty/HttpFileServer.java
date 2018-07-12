@@ -60,6 +60,7 @@ public class HttpFileServer {
             this.basePath = basePath;
         }
 
+        @Override
         protected void initChannel(SocketChannel socketChannel) throws Exception {
             socketChannel.pipeline().addLast("http-decoder", new HttpRequestDecoder());
             socketChannel.pipeline().addLast("http-aggregator", new HttpObjectAggregator(65536));
@@ -78,6 +79,7 @@ public class HttpFileServer {
         }
 
 
+        @Override
         protected void messageReceived(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) throws Exception {
             if (!fullHttpRequest.getDecoderResult().isSuccess()) {
                 sendError(ctx, HttpResponseStatus.BAD_REQUEST);
@@ -113,10 +115,12 @@ public class HttpFileServer {
             ctx.write(response);
             ChannelFuture sendFileFuture = ctx.write(new ChunkedFile(randomAccessFile, 0, fileLength, 8192), ctx.newProgressivePromise());
             sendFileFuture.addListener(new ChannelProgressiveFutureListener() {
+                @Override
                 public void operationProgressed(ChannelProgressiveFuture channelProgressiveFuture, long l, long l2) throws Exception {
                     System.out.println(l);
                 }
 
+                @Override
                 public void operationComplete(ChannelProgressiveFuture channelProgressiveFuture) throws Exception {
                     System.out.println(channelProgressiveFuture);
                     //To change body of implemented methods use File | Settings | File Templates.
@@ -165,10 +169,12 @@ public class HttpFileServer {
                     .addListener(ChannelFutureListener.CLOSE);
         }
 
+        @Override
         public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
             ctx.flush();
         }
 
+        @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             cause.printStackTrace();
             ctx.close();

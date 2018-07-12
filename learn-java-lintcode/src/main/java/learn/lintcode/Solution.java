@@ -195,6 +195,7 @@ public class Solution {
             }
         }
 
+        @Override
         public String toString() {
             return val + "->" + next;
         }
@@ -556,6 +557,7 @@ public class Solution {
             }
         }
 
+        @Override
         public String toString() {
             return label + "->" + next + ",[" + (random == null ? "null" : random.label) + "]";
         }
@@ -1288,11 +1290,367 @@ public class Solution {
      */
     public int hashCode(char[] key, int HASH_SIZE) {
         int result = 0;
-        for(int i=0;i<key.length;i++){
-            result=result*33+(int)key[i];
+        for (int i = 0; i < key.length; i++) {
+            result = result * 33 + (int) key[i];
             //result+=(((int)key[i])*(int)Math.pow(33,j))%HASH_SIZE;
         }
         return result % HASH_SIZE;
         // write your code here
+    }
+
+    @Test
+    public void uniquePaths() {
+        System.out.println(uniquePaths(8, 68));
+    }
+
+    public int uniquePaths(int m, int n) {
+        if (m > n) {
+            return uniquePaths(n, m);
+        }
+        int s = m + n - 2;
+        long cc = 1;
+        int j = 2;
+        for (int i = n; i <= s; i++) {
+            cc *= i;
+            for (; j < m; ) {
+                if (cc % j != 0) {
+                    break;
+                }
+                cc /= j;
+                j++;
+            }
+        }
+        for (; j < m; ) {
+            cc /= j;
+            j++;
+        }
+        return (int) cc;
+    }
+
+    @Test
+    public void uniquePaths2() {
+        System.out.println(uniquePaths2(8, 68));
+    }
+
+    public int uniquePaths2(int m, int n) {
+        char[] route = new char[m + n - 2];
+        int count = 0;
+        for (int sm = 0, sn = 0; ; ) {
+            while (sm + sn < route.length) {
+                if (m > sm + 1) {
+                    sm++;
+                    route[sm + sn - 1] = 'R';
+                } else {
+                    sn++;
+                    route[sm + sn - 1] = 'D';
+                }
+            }
+            count++;
+            boolean backSuccess = false;
+            for (int i = route.length - 1; i >= 0; i--) {
+                if (route[i] == 'R') {
+                    sm--;
+                    if (sn < n - 1) {
+                        route[i] = 'D';
+                        sn++;
+                        backSuccess = true;
+                        break;
+                    } else {
+                        route[i] = '\0';
+                    }
+                } else {
+                    route[i] = '\0';
+                    sn--;
+                }
+            }
+            if (!backSuccess) {
+                break;
+            }
+        }
+        return count;
+    }
+
+    @Test
+    public void uniquePaths3() {
+        System.out.println(uniquePaths3(1, 3));
+    }
+
+    public int uniquePaths3(int m, int n) {
+        int[][] grid = new int[m][n];
+        grid[0][0] = 1;
+        for (int i = 0; i < m; i++) {
+            grid[i][0] = 1;
+            for (int j = 1; j < n; j++) {
+                if (i == 0) {
+                    grid[i][j] = 1;
+                } else {
+                    grid[i][j] = grid[i - 1][j] + grid[i][j - 1];
+                }
+            }
+        }
+        return grid[m - 1][n - 1];
+    }
+
+    @Test
+    public void uniquePathsWithObstacles() {
+        int[][] obstacleGrid = new int[][]{{0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, 0}};
+        System.out.println(uniquePathsWithObstacles(obstacleGrid));
+    }
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length;
+        int n = obstacleGrid[0].length;
+        int[][] grid = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0) {
+                    if (j == 0) {
+                        grid[i][j] = 1;
+                        continue;
+                    }
+                    if (obstacleGrid[i][j] == 1) {
+                        grid[i][j] = 0;
+                    } else {
+                        grid[i][j] = grid[i][j - 1];
+                    }
+                } else {
+                    if (j == 0) {
+                        if (obstacleGrid[i][j] == 1) {
+                            grid[i][j] = 0;
+                        } else {
+                            grid[i][j] = grid[i - 1][j];
+                        }
+                        continue;
+                    }
+                    if (obstacleGrid[i][j] == 1) {
+                        grid[i][j] = 0;
+                    } else {
+                        grid[i][j] = grid[i][j - 1] + grid[i - 1][j];
+                    }
+                }
+            }
+        }
+        return grid[m - 1][n - 1];
+    }
+
+    //Definition of Interval:
+    class Interval {
+        int start, end;
+
+        Interval(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    @Test
+    public void insertInterval() {
+        List<Interval> intervals = new ArrayList<>();
+        intervals.add(new Interval(1, 5));
+        System.out.println(insertInterval(intervals, new Interval(5, 7)));
+    }
+
+    @Test
+    public void insertInterval2() {
+        List<Interval> intervals = new ArrayList<>();
+        intervals.add(new Interval(1, 5));
+        intervals.add(new Interval(6, 8));
+        System.out.println(insertInterval(intervals, new Interval(0, 9)));
+    }
+
+    public List<Interval> insertInterval(List<Interval> intervals, Interval newInterval) {
+        // write your code here
+        if (intervals.size() <= 0) {
+            intervals.add(newInterval);
+            return intervals;
+        }
+        for (int i = 0; i < intervals.size(); ) {
+            Interval interval = intervals.get(i);
+            if (interval.start < newInterval.start) {
+                if (interval.end < newInterval.start) {
+                    i++;
+                } else if (interval.end <= newInterval.end) {
+                    intervals.remove(interval);
+                    newInterval.start = interval.start;
+                } else {
+                    return intervals;
+                }
+            } else if (interval.start <= newInterval.end) {
+                if (interval.end <= newInterval.end) {
+                    intervals.remove(interval);
+                } else {
+                    intervals.remove(interval);
+                    newInterval.end = interval.end;
+                }
+            } else {
+                intervals.add(intervals.indexOf(interval), newInterval);
+                newInterval = null;
+                break;
+            }
+        }
+        if (newInterval != null) {
+            intervals.add(newInterval);
+        }
+        return intervals;
+    }
+
+    @Test
+    public void minSubArray() {
+        System.out.println(minSubArray(Arrays.asList(-1, -2, -3, -100, -1, -50)));
+        System.out.println(minSubArray(Arrays.asList(1, 1, 1, 1, 1, 1, 1, 1, 1, -19, 1, 1, 1, 1, 1, 1, 1, -2, 1, 1, 1, 1, 1, 1, 1, 1, -2, 1, -15, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)));
+    }
+
+    public int minSubArray(List<Integer> nums) {
+        // write your code here
+        if (nums.size() <= 0) {
+            return 0;
+        }
+        int sum = nums.get(0);
+        int result = sum;
+        for (int i = 1; i < nums.size(); i++) {
+            int num = nums.get(i);
+            if (sum >= 0) {
+                if (num < sum) {
+                    sum = num;
+                    if (sum < result) {
+                        result = sum;
+                    }
+                }
+            } else {
+                if (sum + num < 0) {
+                    sum += num;
+                    if (sum < result) {
+                        result = sum;
+                    }
+                } else {
+                    sum = 0;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Test
+    public void productExcludeItself() {
+        System.out.println(productExcludeItself(new ArrayList<>()));
+        System.out.println(productExcludeItself(Collections.singletonList(1)));
+        System.out.println(productExcludeItself(Arrays.asList(1, 2)));
+        System.out.println(productExcludeItself(Arrays.asList(1, 2, 3)));
+        System.out.println(productExcludeItself(Arrays.asList(1, 2, 3, 4)));
+        System.out.println(productExcludeItself(Arrays.asList(1, 2, 3, 4, 5)));
+    }
+
+    public List<Long> productExcludeItself(List<Integer> nums) {
+        // write your code here
+
+        List<Long> result = new ArrayList<>(nums.size());
+        if (nums.size() == 0) {
+            return result;
+        }
+        if (nums.size() == 1) {
+            result.add(1L);
+            return result;
+        }
+        for (int i = 0; i < nums.size(); i++) {
+            result.add(1L);
+        }
+        long temp = 1;
+        result.set(0, temp);
+        for (int i = 0; i < nums.size(); i++) {
+            result.set(i, temp);
+            temp *= nums.get(i);
+        }
+        temp = 1;
+        for (int i = nums.size() - 1; i >= 0; i--) {
+            result.set(i, temp * result.get(i));
+            temp *= nums.get(i);
+        }
+        return result;
+    }
+
+    @Test
+    public void recoverRotatedSortedArray() {
+//        System.out.println(recoverRotatedSortedArray(Arrays.asList(4, 5, 1, 2, 3)));
+//        System.out.println(recoverRotatedSortedArray(Arrays.asList(5, 6, 1, 2, 3, 4)));
+        System.out.println(recoverRotatedSortedArray(Arrays.asList(1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)));
+    }
+
+    public List<Integer> recoverRotatedSortedArray(List<Integer> nums) {
+        // write your code here
+        int size = nums.size();
+        for (int i = 0; i < size - 1; i++) {
+            if (nums.get(i) > nums.get(i + 1)) {
+                int d = size - 1 - i;
+                int di = div(size, d);
+                for (int j = 0; j < di; j++) {
+                    int p = i;
+                    int t = nums.get(p);
+                    for (; ; ) {
+                        p = p + d;
+                        if (p >= size) {
+                            p -= size;
+                        }
+                        int t2 = nums.get(p);
+                        nums.set(p, t);
+                        t = t2;
+                        if (p == i) {
+                            break;
+                        }
+                    }
+                    i++;
+                }
+                break;
+            }
+        }
+        return nums;
+    }
+
+    private int div(int a, int b) {
+        if (a < b) {
+            return div(b, a);
+        }
+        int t = a % b;
+        if (t != 0) {
+            return div(b, t);
+        }
+        return b;
+    }
+
+    @Test
+    public void minimumTotal() {
+//        System.out.println(minimumTotal(new int[][]{{-10}}));
+        System.out.println(minimumTotal(new int[][]{{1}, {2, 3}}));
+
+    }
+
+    /**
+     * @param triangle: a list of lists of integers
+     * @return: An integer, minimum path sum
+     */
+    public int minimumTotal(int[][] triangle) {
+        // write your code here
+        int[][] temp = new int[triangle.length][];
+        for (int i = 0; i < triangle.length; i++) {
+            int[] triangleI = triangle[i];
+            temp[i] = new int[triangleI.length];
+            for (int j = 0; j < triangleI.length; j++) {
+                if (i == 0) {
+                    temp[i][j] = triangle[i][j];
+                } else if (j == 0) {
+                    temp[i][j] = temp[i - 1][j] + triangle[i][j];
+                } else if (j == triangleI.length - 1) {
+                    temp[i][j] = temp[i - 1][j - 1] + triangle[i][j];
+                } else {
+                    temp[i][j] = Math.min(temp[i - 1][j - 1], temp[i - 1][j]) + triangle[i][j];
+                }
+            }
+        }
+        int minSum = Integer.MAX_VALUE;
+        for (int sum : temp[temp.length - 1]) {
+            if (sum < minSum) {
+                minSum = sum;
+            }
+        }
+        return minSum;
     }
 }

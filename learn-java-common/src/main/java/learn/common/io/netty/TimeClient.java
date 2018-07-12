@@ -43,6 +43,7 @@ public class TimeClient {
     }
 
     private class TimeClientChannel extends ChannelInitializer<SocketChannel> {
+        @Override
         protected void initChannel(SocketChannel ch) throws Exception {
             ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
             ch.pipeline().addLast(new StringDecoder());
@@ -57,6 +58,7 @@ public class TimeClient {
             req = ("QUERY TIME ORDER" + System.getProperty("line.separator")).getBytes();
         }
 
+        @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             for (int i = 0; i < 100; i++) {
                 ByteBuf firstMessage = Unpooled.buffer(req.length);
@@ -65,6 +67,7 @@ public class TimeClient {
             }
         }
 
+        @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 //            ByteBuf buf = (ByteBuf) msg;
 //            byte[] req = new byte[buf.readableBytes()];
@@ -74,6 +77,7 @@ public class TimeClient {
 //            ctx.close();
         }
 
+        @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             cause.printStackTrace();
             ctx.close();

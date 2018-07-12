@@ -41,6 +41,7 @@ public class TimeClient {
     }
 
     private class TimeClientChannel extends ChannelInitializer<SocketChannel> {
+        @Override
         protected void initChannel(SocketChannel ch) throws Exception {
             ch.pipeline().addLast(new TimeClientHandler());
         }
@@ -56,10 +57,12 @@ public class TimeClient {
             firstMessage.writeBytes(req);
         }
 
+        @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             ctx.writeAndFlush(firstMessage);
         }
 
+        @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             ByteBuf buf = (ByteBuf) msg;
             byte[] req = new byte[buf.readableBytes()];
@@ -68,6 +71,7 @@ public class TimeClient {
             System.out.println("Now is : " + body);
         }
 
+        @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             cause.printStackTrace();
             ctx.close();

@@ -36,6 +36,7 @@ public class TimeServer {
             this.port = port;
         }
 
+        @Override
         public void run() {
             try {
                 this.asynchronousServerSocketChannel = AsynchronousServerSocketChannel.open();
@@ -58,12 +59,14 @@ public class TimeServer {
         }
 
         private class AcceptCompletionHandler implements CompletionHandler<AsynchronousSocketChannel, AsyncTimeServerHandler> {
+            @Override
             public void completed(AsynchronousSocketChannel channel, AsyncTimeServerHandler attachment) {
                 attachment.asynchronousServerSocketChannel.accept(attachment, this);
                 ByteBuffer buffer = ByteBuffer.allocate(1024);
                 channel.read(buffer, new ReadWriteCompletionAttachment(channel, buffer), new ReadCompletionHandler());
             }
 
+            @Override
             public void failed(Throwable exc, AsyncTimeServerHandler attachment) {
                 exc.printStackTrace();
                 attachment.latch.countDown();
@@ -73,6 +76,7 @@ public class TimeServer {
 
         private class ReadCompletionHandler implements CompletionHandler<Integer, ReadWriteCompletionAttachment> {
 
+            @Override
             public void completed(Integer result, ReadWriteCompletionAttachment attachment) {
                 ByteBuffer buffer = attachment.getBuffer();
                 buffer.flip();
@@ -99,6 +103,7 @@ public class TimeServer {
                 }
             }
 
+            @Override
             public void failed(Throwable exc, ReadWriteCompletionAttachment attachment) {
                 try {
                     attachment.getChannel().close();
@@ -109,12 +114,14 @@ public class TimeServer {
         }
 
         private class WriteCompletionHandler implements CompletionHandler<Integer, ReadWriteCompletionAttachment> {
+            @Override
             public void completed(Integer result, ReadWriteCompletionAttachment attachment) {
                 if (attachment.getBuffer().hasRemaining()) {
                     attachment.getChannel().write(attachment.getBuffer(), attachment, this);
                 }
             }
 
+            @Override
             public void failed(Throwable exc, ReadWriteCompletionAttachment attachment) {
                 try {
                     attachment.getChannel().close();

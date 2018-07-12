@@ -30,6 +30,7 @@ public class Tests {
             this.population = population;
         }
 
+        @Override
         public String toString() {
 //            Tests.this.toString();
             return getName() + " - " + getPopulation();
@@ -73,6 +74,7 @@ public class Tests {
 
     private void PriorityQueueTest() {
         Comparator<C1> OrderIsdn = new Comparator<C1>() {
+            @Override
             public int compare(C1 o1, C1 o2) {
                 // TODO Auto-generated method stub
                 int numbera = o1.getPopulation();

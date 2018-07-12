@@ -11,6 +11,7 @@ public class TwinsLockTest {
         final Lock lock = new TwinsLock();
 
         class Worker extends Thread {
+            @Override
             public void run() {
                 while (true) {
                     lock.lock();

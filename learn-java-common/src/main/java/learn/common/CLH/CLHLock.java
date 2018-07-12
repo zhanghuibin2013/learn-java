@@ -13,6 +13,7 @@ public class CLHLock implements Lock {
     public CLHLock() {
         tail = new AtomicReference(new QNode());
         myNode = new ThreadLocal() {
+            @Override
             protected QNode initialValue() {
                 return new QNode();
             }

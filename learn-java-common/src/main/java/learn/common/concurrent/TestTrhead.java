@@ -14,6 +14,7 @@ public class TestTrhead implements Runnable {
     public TestTrhead(String name){
         this.name = name ;
     }
+    @Override
     public void run() {
         //To change body of implemented methods use File | Settings | File Templates.
         sy(this);

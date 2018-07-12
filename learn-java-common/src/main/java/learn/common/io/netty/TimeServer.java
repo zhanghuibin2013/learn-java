@@ -49,6 +49,7 @@ public class TimeServer {
 
     private class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
+        @Override
         protected void initChannel(SocketChannel socketChannel) throws Exception {
             socketChannel.pipeline().addLast(new LineBasedFrameDecoder(1024));
             socketChannel.pipeline().addLast(new StringDecoder());
@@ -59,6 +60,7 @@ public class TimeServer {
     private class TimeServerHandler extends ChannelHandlerAdapter {
         private int counter;
 
+        @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 //            ByteBuf buf = (ByteBuf) msg;
 //            byte[] req = new byte[buf.readableBytes()];
@@ -71,10 +73,12 @@ public class TimeServer {
             ctx.write(resp);
         }
 
+        @Override
         public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
             ctx.flush();
         }
 
+        @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             ctx.close();
         }

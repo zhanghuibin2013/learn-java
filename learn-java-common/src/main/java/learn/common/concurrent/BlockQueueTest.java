@@ -13,6 +13,7 @@ public class BlockQueueTest {
         final BlockQueue<Integer> blockQueue = new BlockQueue<Integer>();
 
         Thread t1 = new Thread(new Runnable() {
+            @Override
             public void run() {
                 try {
                     Thread.sleep(10000);
@@ -31,6 +32,7 @@ public class BlockQueueTest {
         Thread[] threads = new Thread[10];
         for (int i = 0; i < N; i++) {
             threads[i] = new Thread(new Runnable() {
+                @Override
                 public void run() {
                     try {
                         System.out.println(Thread.currentThread() + "dequeue...");

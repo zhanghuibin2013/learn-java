@@ -26,10 +26,12 @@ public class newio {
         System.out.println(file.getAbsolutePath());
         FileInputStream fileInputStream=new FileInputStream(file);
         byte[] buf=new byte[1024];
-        int bytesRead = fileInputStream.read(buf); //read into buffer.
+        //read into buffer.
+        int bytesRead = fileInputStream.read(buf);
         while (bytesRead != -1) {
             String s = new String(buf);
-            System.out.print(s); // read 1 byte at a time  //
+            // read 1 byte at a time  //
+            System.out.print(s);
             bytesRead = fileInputStream.read(buf);
         }
         fileInputStream.close();
@@ -43,11 +45,13 @@ public class newio {
         FileChannel inChannel = fileInputStream.getChannel();
         //create buffer with capacity of 48 bytes
         ByteBuffer buf = ByteBuffer.allocate(48);
-        int bytesRead = inChannel.read(buf); //read into buffer.
+        //read into buffer.
+        int bytesRead = inChannel.read(buf);
         while (bytesRead != -1) {
             buf.flip();  //make buffer ready for read
             while(buf.hasRemaining()){
-                System.out.print((char) buf.get()); // read 1 byte at a time
+                // read 1 byte at a time
+                System.out.print((char) buf.get());
             }
 
             buf.clear(); //make buffer ready for writing
