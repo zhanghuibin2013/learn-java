@@ -9,6 +9,8 @@ import java.util.*;
  */
 public class Solution {
 
+    public static final int MOD = 10000;
+
     @Test()
     public void threeSum() {
         List<List<Integer>> lists = threeSum(new int[]{-1, 0, 1, 2, -1, -4});
@@ -1652,5 +1654,247 @@ public class Solution {
             }
         }
         return minSum;
+    }
+
+    @Test
+    public void lastFourDigitsOfFn() {
+        for (int i = 0; i < 110; i++) {
+            System.out.println(i + "=" + lastFourDigitsOfFn(i));
+        }
+
+    }
+
+    public String lastFourDigitsOfFn(int n) {
+        // write your code here
+        long[][] result = new long[][]{{1, 0}, {0, 1}};
+        long[][] temp = new long[][]{{1, 1}, {1, 0}};
+        for (int i = n; i > 0; i = i >> 1) {
+            if ((i & 1) == 1) {
+                result = matrixMultiply(result, temp);
+            }
+            temp = matrixMultiply(temp, temp);
+        }
+        return String.valueOf(result[1][0]);
+//        return String.valueOf(result[1][0] % 10000);
+    }
+
+    long[][] matrixMultiply(long[][] x, long[][] y) {
+        long[][] result = new long[x.length][y[0].length];
+        for (int i = 0; i < x.length; i++) {
+            long[] row = x[i];
+            for (int j = 0; j < y[0].length; j++) {
+                for (int k = 0; k < row.length; k++) {
+                    result[i][j] += row[k] * y[j][k];
+                }
+                result[i][j] = result[i][j] % MOD;
+            }
+        }
+        return result;
+    }
+
+
+    @Test
+    public void countRotateWords() {
+        System.out.println(countRotateWords(Arrays.asList("abba", "bbaa", "baab", "aabb", "abba")));
+    }
+
+    public int countRotateWords(List<String> words) {
+        // Write your code here
+        List<String> words2 = new ArrayList<>(words.size());
+        words2.addAll(words);
+        int result = words2.size();
+        while (words2.size() > 0) {
+            String word = words2.remove(0);
+            while (words2.contains(word)) {
+                words2.remove(word);
+                result--;
+            }
+            String rotate = rotateWord(word);
+            while (!word.equals(rotate)) {
+                while (words2.contains(rotate)) {
+                    words2.remove(rotate);
+                    result--;
+                }
+                rotate = rotateWord(rotate);
+            }
+        }
+        return result;
+    }
+
+    String rotateWord(String word) {
+        if (word.length() == 1) {
+            return word;
+        }
+        return word.substring(1) + word.charAt(0);
+    }
+
+    @Test
+    public void checkSumOfSquareNumbers() {
+        System.out.println(checkSumOfSquareNumbers(2147483647));
+    }
+
+    public boolean checkSumOfSquareNumbers(int num) {
+        // write your code here
+        //if(num<=1){
+        //    return false;
+        //}
+        Set<Integer> squareNumbers = new HashSet<>();
+        for (int i = 0; ; i++) {
+            int s = i * i;
+            if (s > num) {
+                break;
+            }
+            squareNumbers.add(s);
+            if (squareNumbers.contains(num - s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Test
+    public void isToeplitzMatrix() {
+        System.out.println(isToeplitzMatrix(new int[][]{{1, 2, 3, 4}, {5, 1, 2, 3}, {9, 5, 1, 2}}));
+    }
+
+    public boolean isToeplitzMatrix(int[][] matrix) {
+        // Write your code here
+        int M = matrix.length;
+        int N = matrix[0].length;
+        for (int i = 0; i < M + N - 1; i++) {
+            int x = 0, y = 0;
+            if (i < M) {
+                x = 0;
+                y = M - i - 1;
+            } else {
+                x = i - M;
+                y = 0;
+            }
+            int e = matrix[y][x];
+            while (x < N - 1 && y < M - 1) {
+                x++;
+                y++;
+                if (e != matrix[y][x]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Test
+    public void floodFill() {
+        System.out.println(Arrays.deepToString(floodFill(new int[][]{{1, 1, 1}, {1, 1, 0}, {1, 0, 1}}, 1, 1, 2)));
+    }
+
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        // Write your code here
+        int oldColor = image[sr][sc];
+//        int[] steps=new int[]
+        floodFill(image, sr, sc, oldColor, newColor, -1, -1);
+        return image;
+    }
+
+    public void floodFill(int[][] image, int sr, int sc, int oldColor, int newColor, int exclude, int exclude2) {
+        // Write your code here
+        System.out.println(sr + "," + sc);
+        image[sr][sc] = newColor;
+        if (exclude != 0 && exclude2 != 0 && sr > 0 && image[sr - 1][sc] == oldColor) {
+            floodFill(image, sr - 1, sc, oldColor, newColor, 2, exclude);
+        }
+        if (exclude != 1 && exclude2 != 1 && sc < image[0].length - 1 && image[sr][sc + 1] == oldColor) {
+            floodFill(image, sr, sc + 1, oldColor, newColor, 3, exclude);
+        }
+        if (exclude != 2 && exclude2 != 2 && sr < image.length - 1 && image[sr + 1][sc] == oldColor) {
+            floodFill(image, sr + 1, sc, oldColor, newColor, 0, exclude);
+        }
+        if (exclude != 3 && exclude2 != 3 && sc > 0 && image[sr][sc - 1] == oldColor) {
+            floodFill(image, sr, sc - 1, oldColor, newColor, 1, exclude);
+        }
+    }
+
+    public List<String> subdomainVisits(String[] cpdomains) {
+        // Write your code here
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < cpdomains.length; i++) {
+            String[] cpdomainss = cpdomains[i].split(" ");
+            String cpdomain = cpdomainss[1];
+            int count = Integer.valueOf(cpdomainss[0]);
+            while (true) {
+                Integer ex = map.get(cpdomain);
+                if (ex != null) {
+                    map.put(cpdomain, ex + count);
+                } else {
+                    map.put(cpdomain, count);
+                }
+                int dotIndex = cpdomain.indexOf('.');
+                if (dotIndex > 0) {
+                    cpdomain = cpdomain.substring(dotIndex + 1);
+                } else {
+                    break;
+                }
+            }
+        }
+        List<String> result = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            result.add(entry.getValue() + " " + entry.getKey());
+        }
+        return result;
+    }
+
+    public int poorPigs(int buckets, int minutesToDie, int minutesToTest) {
+        // Write your code here
+        int result = (int) Math.ceil(Math.log(buckets) / Math.log(minutesToTest / minutesToDie));
+        return result;
+    }
+
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        // Write your code here
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            Integer lastIndex = map.get(num);
+            if (lastIndex != null && lastIndex >= i - k && lastIndex <= i + k) {
+                return true;
+            }
+            map.put(num, i);
+        }
+        return false;
+    }
+
+    @Test
+    public void diameterOfBinaryTree() {
+        System.out.println(diameterOfBinaryTree(TreeNode.build(new int[]{1, 2, 3, 4, 5})));
+        System.out.println(diameterOfBinaryTree(TreeNode.build(new int[]{2, 3, -1, 1})));
+    }
+
+    public int diameterOfBinaryTree(TreeNode root) {
+        // write your code here
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null) {
+            return depthOfBinaryTree(root.right);
+        }
+
+        if (root.right == null) {
+            return depthOfBinaryTree(root.left);
+        }
+        return depthOfBinaryTree(root.left) + depthOfBinaryTree(root.right);
+    }
+
+    public int depthOfBinaryTree(TreeNode root) {
+        // write your code here
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null) {
+            return depthOfBinaryTree(root.right) + 1;
+        }
+
+        if (root.right == null) {
+            return depthOfBinaryTree(root.left) + 1;
+        }
+        return (int) Math.max(depthOfBinaryTree(root.left), depthOfBinaryTree(root.right)) + 1;
     }
 }
