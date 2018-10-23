@@ -106,7 +106,7 @@ public class Program {
 //                }
 //            }
 //        };
-//        for (int i = 0; i < 20; i++) {
+//        for (int getI = 0; getI < 20; getI++) {
 //            Thread t = new Thread(target);
 //            t.start();
 //        }

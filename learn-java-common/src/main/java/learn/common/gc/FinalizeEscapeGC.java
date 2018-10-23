@@ -11,7 +11,7 @@ public class FinalizeEscapeGC {
     public static FinalizeEscapeGC SAVE_HOOK = null;
 
     public void isAlive() {
-        System.out.println("yes,i am still alive：)");
+        System.out.println("yes,getI am still alive：)");
     }
 
     @Override
@@ -31,7 +31,7 @@ public class FinalizeEscapeGC {
 //        if (SAVE_HOOK != null) {
 //            SAVE_HOOK.isAlive();
 //        } else {
-//            System.out.println("no,i am dead：(");
+//            System.out.println("no,getI am dead：(");
 //        }//下面这段代码与上面的完全相同，但是这次自救却失败了
 //        SAVE_HOOK = null;
 //        System.gc();
@@ -40,7 +40,7 @@ public class FinalizeEscapeGC {
 //        if (SAVE_HOOK != null) {
 //            SAVE_HOOK.isAlive();
 //        } else {
-//            System.out.println("no,i am dead：(");
+//            System.out.println("no,getI am dead：(");
 //        }
 //    }
 }

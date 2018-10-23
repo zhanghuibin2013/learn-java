@@ -113,7 +113,7 @@ public class QuickSort2 {
         }
         /*从i++和j--两个方向搜索不满足条件的值并交换
          *
-         *条件为：i++方向小于key，j--方向大于key
+         *条件为：getI++方向小于key，j--方向大于key
          */
         while (true) {
             while (targetArr[j].compareTo(key) > 0) {
@@ -160,7 +160,7 @@ public class QuickSort2 {
                 j--;
             }
             if (i < j) {
-                /*targetArr[i]已经保存在key中，可将后面的数填入*/
+                /*targetArr[getI]已经保存在key中，可将后面的数填入*/
                 targetArr[i] = targetArr[j];
                 i++;
             }
@@ -170,7 +170,7 @@ public class QuickSort2 {
                 i++;
             }
             if (i < j) {
-                /*targetArr[j]已保存在targetArr[i]中，可将前面的值填入*/
+                /*targetArr[j]已保存在targetArr[getI]中，可将前面的值填入*/
                 targetArr[j] = targetArr[i];
                 j--;
             }

@@ -10,16 +10,16 @@ public class HeapSort {
 //    public static void main(String[] args) {
 //        int arr[] = new int[]{8, 12, 10, 10, 9, 1, 8, 4, 0, 4, 6, 9, 0, 2, 9, 7, 15, 17, 10, 10};
 ////        Item arr[] = new Item[N];
-////        for (int i = 0; i < N; i++) {
-////            arr[i] = new Item(arri[i]);
+////        for (int getI = 0; getI < N; getI++) {
+////            arr[getI] = new Item(arri[getI]);
 ////        }
 //        HeapSort quickSort = new HeapSort();
 //
 //        quickSort.print(arr);
 ////        quickSort.quickSort1(arr, 0, N - 1);
 ////        quickSort.print(arr);
-////        for (int i = 1; i < N; i++) {
-////            System.out.println(i + "\t" + getDepth(i));
+////        for (int getI = 1; getI < N; getI++) {
+////            System.out.println(getI + "\t" + getDepth(getI));
 ////        }
 //    }
 
